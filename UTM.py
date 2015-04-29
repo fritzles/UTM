@@ -1,3 +1,16 @@
+class TM(object):
+	"""docstring for TM"""
+	def __init__(self, table, halt, blank):
+		super(TM, self).__init__()
+
+		self.table = table
+		self.halt = halt
+		self.blank = blank
+
+	def returnMachine(self):
+		return self.table, self.halt, self.blank
+		
+
 class UTM(object):
 	"""
 
@@ -32,8 +45,11 @@ class UTM(object):
 
 	"""
 
-	def __init__(self, table, tape, accept, blankSymbol ):
+	def __init__(self, TM, tape):
 		self.currentState = "q0"
+
+		table, accept, blankSymbol = TM.returnMachine()
+
 		self.tape = {}
 		self.blankSymbol = blankSymbol
 		self.min = 0
@@ -121,7 +137,7 @@ class UTM(object):
 
 		while(not(self.currentState in self.accept)):
 			self.move()
-			# print(self.printID())   ## I would suggest commenting this out for the bb5, considering it's 47 million steps. But, be my guest to leave it in.
+			print(self.printID())   ## I would suggest commenting this out for the bb5, considering it's 47 million steps. But, be my guest to leave it in.
 			
 
 blank = "_"
@@ -191,13 +207,37 @@ bb5 = {	"q0" : { #HALT State is q5
 		
 		}
 		
-# 
-utm  = UTM(bb5, "", "q5", blank)
-# utm.printStats()
+homework = TM(hw,"q6",blank)
+nonTerm = TM(nonTerminating,"none",blank)
+busyBeaver3 = TM(bb3,"q3",blank)
+busyBeaver4 = TM(bb4,"q4",blank)
+busyBeaver5 = TM(bb5,"q5",blank)
+
+utm_homework  = UTM(homework, "000100")
+utm_nonTerm  = UTM(nonTerm, "000100")
+utm_bb3  = UTM(busyBeaver3, "")
+utm_bb4  = UTM(busyBeaver4, "")
+utm_bb5  = UTM(busyBeaver5, "")
 try:
-	utm.simulate()
-	utm.printNumSteps()
-	utm.printStats()
+	choice = int(input("Choose which TM you wish to simulate: \n1)The Homework Problem\n2)Self Defined NonTerminating\n3)Busy Beaver 3\n4)Busy Beaver 4\n5)Busy Beaver 5\n\nPlease type an integer: "))
+	if choice == 1:
+		utm_homework.simulate()
+		# utm_bb5.printStats()
+	elif choice == 2:
+		utm_nonTerm.simulate()
+		utm_bb5.printStats()
+	elif choice == 3:
+		utm_bb3.simulate()
+		utm_bb5.printStats()
+	elif choice == 4:
+		utm_bb4.simulate()
+		utm_bb5.printStats()
+	elif choice == 5:
+		print("Please note the comment to comment out the printID function in the move function. This will allow you to run this busy beaver in a quicker time.")
+		utm_bb5.simulate()
+		utm_bb5.printStats()
 except KeyboardInterrupt:
-	print()
-	utm.printNumSteps()
+	print("Exiting...")
+except:
+	print("Invalid Choice.")
+

@@ -27,3 +27,22 @@ In order to run this UTM, please follow the instructions below:
 			Both the bb3 and bb4 seem to speed quickly. When running, it's almost immediate output. But, the bb5
 			takes notably longer, just based on the number of transitions needed. bb5 took about 1:24(1 minute, 24 seconds)
 			to run. 
+
+
+	1. A set of states; your datastructure should allow you to define an 
+			arbitrary number of states in a TM. 
+	2. *An input alphabet. You may omit this if you just want to assume a 
+			binary input alphabet. (Assumed to be Binary (0,1))
+	3. A tape alphabet. This should include the input alphabet (implicitly 
+			or explicitly), and also allow definition of an arbitrary number of 
+			additional tape symbols. (Assumed to be the input alphabet with the blank symbol.)
+	4. The transition function. (Thrice Nested Dictionaries)
+	5. A start state. (Assumed to be q0)
+	6. The blank symbol. (see the variable "blank")
+	7. Final (Halt) states. (input as a string to the constructor)
+
+
+	1. A simple, non-terminating TM. (nonTerminating)
+  	2. The subtraction TM described in the textbook (Example 8.4).
+  	3. Busy Beaver 3 and 4, along with observations about running times,
+		i.e. how long did each take in your simulation.
