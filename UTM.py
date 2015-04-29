@@ -10,8 +10,25 @@ class UTM(object):
 		3. When constructing the transition tables, I've omitted the accept states as seperate lines.
 			Please take notice that you can supply the accept states as their values seperated by commas.
 		4. The blank symbol is considered to be an underscore. You may change this at your own risk. 
-		5. 
+		5. All transition tables are assume to start on q0.
 
+	Additonal notes:
+
+		Data Structures:
+
+			I opted to use a dictionary as my tape, making the keys integer values. To move on the tape, 
+			the 'machine' gets the current value at self.index and then determines what to do next. Using
+			dictionaries makes the tape size theoretically infinite (but in all practicality, you would 
+			need lots of memory)
+			
+			Transition tables are also dictionaries, but thrice nested. Please take care to use the structure 
+			laid out in the 5 tables I've provided.
+
+		Run Times:
+
+			Both the bb3 and bb4 seem to speed quickly. When running, it's almost immediate output. But, the bb5
+			takes notably longer, just based on the number of transitions needed. bb5 took about 1:24(1 minute, 24 seconds)
+			to run. 
 
 	"""
 
@@ -30,7 +47,6 @@ class UTM(object):
 	
 	def inputTape(self, tape):
 		if type(tape) is str :
-			# print(len(tape))
 			if len(tape) != 0:
 				self.min = 0
 				for i in range(len(tape)):
@@ -39,8 +55,6 @@ class UTM(object):
 			else:
 				self.tape[0] = self.blankSymbol
 
-		elif type(tape) is dict:
-			self.tape = tape
 		else:
 			raise Exception("Invalid Tape input.")
 
@@ -83,7 +97,7 @@ class UTM(object):
 		print(self.currentState)
 
 	def printNumSteps(self):
-		print(format(self.numSteps,",d"))
+		print("Number of steps: " , format(self.numSteps,",d"))
 
 	def printAccepts(self):
 		for x in self.accept:
@@ -93,7 +107,6 @@ class UTM(object):
 		num0 = 0
 		num1 = 0
 		numblank = 0
-		# print(self.min, ":", self.max)
 		for x in range(self.min , self.max+1 ):
 			 if(self.tape[x] == self.blankSymbol):
 			 	numblank += 1
@@ -105,27 +118,24 @@ class UTM(object):
 		print("blank : ", numblank, "\n1 : ", num1, "\n0 : ", num0)
 
 	def simulate(self):
-		import time
-		# self.printID()
+
 		while(not(self.currentState in self.accept)):
 			self.move()
-			print(self.printID())   
+			# print(self.printID())   ## I would suggest commenting this out for the bb5, considering it's 47 million steps. But, be my guest to leave it in.
 			
 
 blank = "_"
 
-# table = {"q0": { "0" : {"state": "q0", "rewrite": "1" , "move": 1 }, "1":{"state":"q0", "rewrite":"0", "move":-1}, None:{"state":"q1", "write":"0", "move":-1} } }
 hw = {	 "q0" : {"0": {"state":"q1", "rewrite": blank, "move":1}, "1":{"state":"q5", "rewrite":blank, "move":1}}
 			,"q1" : {"0": {"state":"q1", "rewrite": "0", "move":1}, "1":{"state":"q2", "rewrite":"1", "move":1}}
 			,"q2" : {"0": {"state":"q3", "rewrite": "1", "move":-1} , "1" : {"state":"q2", "rewrite": "1", "move":1} , blank: {"state":"q4", "rewrite": blank, "move":-1}}
 			,"q3" : {"0": {"state":"q3", "rewrite": "0", "move":-1} , "1" : {"state":"q3", "rewrite": "1", "move":-1} , blank: {"state":"q0", "rewrite": blank, "move":1}}
 			,"q4" : {"0": {"state":"q4", "rewrite": "0", "move":-1} , "1" : {"state":"q4", "rewrite": blank, "move":-1} , blank: {"state":"q6", "rewrite": "0", "move":1}}
 			,"q5" : {"0": {"state":"q5", "rewrite": blank, "move":1} , "1" : {"state":"q5", "rewrite": blank, "move":1} , blank: {"state":"q6", "rewrite": blank, "move":1}}
-					}
+					} #HALT State is q6
 
-# nonTerm = {	 "q0" : {"0": {"state":"q0", "rewrite": blank, "move":1}, "1":{"state":"q0", "rewrite":"0", "move":1}, blank : {"state":"q0", "rewrite":"1", "move": 1}}}
 
-nonTerminating = { "q0": {
+nonTerminating = { "q0": { #this transition table has no halt state. 
 						"0": { "state" : "q0" , "rewrite":"1", "move": 1},
 						blank : {"state" : "q1", "rewrite":blank, "move": -1},
 						"1": {"state" : "q0", "rewrite" : "1", "move" : 1}
@@ -137,7 +147,7 @@ nonTerminating = { "q0": {
 						"1": {"state" : "q1", "rewrite" : "0", "move" : -1}
 						}}
 
-bb3 = {	"q0" : {
+bb3 = {	"q0" : { #HALT State is q3
 			blank : {"state" : "q1", "rewrite":"1", "move":1 },
 			"1" : {"state" : "q3", "rewrite":"1", "move":1 }},
 		"q1" : {
@@ -148,7 +158,7 @@ bb3 = {	"q0" : {
 			"1" : {"state" : "q0", "rewrite":"1", "move":-1 }}
 		}
 
-bb4 = {	"q0" : {
+bb4 = {	"q0" : { #HALT State is q4
 			blank : {"state" : "q1" , "rewrite": "1", "move": 1},
 			"1" : {"state" : "q1" , "rewrite": "1", "move": -1}},
 		"q1" : {
@@ -163,7 +173,7 @@ bb4 = {	"q0" : {
 		}
 
 
-bb5 = {	"q0" : {
+bb5 = {	"q0" : { #HALT State is q5
 				blank : {"state" : "q1", "rewrite":"1", "move": 1},
 				"1" : {"state" : "q2", "rewrite":"1", "move": -1}},
 		"q1" : {
@@ -182,16 +192,12 @@ bb5 = {	"q0" : {
 		}
 		
 # 
-utm  = UTM(bb4, "", "q4", blank)
-utm.printStats()
+utm  = UTM(bb5, "", "q5", blank)
+# utm.printStats()
 try:
 	utm.simulate()
-	# utm.printNumSteps()
-	# utm.printAccepts()
-	# utm.printStats()
-	# print(utm.printID())
+	utm.printNumSteps()
+	utm.printStats()
 except KeyboardInterrupt:
 	print()
 	utm.printNumSteps()
-# utm.printStats()
-# utm.printIndex()
